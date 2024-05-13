@@ -779,6 +779,67 @@ end)
   	end    
 })
 
+Tab:AddButton({
+	Name = "Name",
+	Callback = function()
+      		--This script is for those games that won't let you use a GUI
+--Once executing, the ESP is instant.
+ 
+ 
+-- Function to update player ESP distance
+local function updatePlayerESP()
+    local localCharacter = game.Players.LocalPlayer.Character
+    if not localCharacter then
+        return
+    end
+ 
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= game.Players.LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
+            local distance = (localCharacter.Head.Position - player.Character.Head.Position).Magnitude
+            local billboardGui = player.Character.Head:FindFirstChild("TadachiisESPTags") -- Check if the BillboardGui exists
+            if not billboardGui then -- Only create a new one if it doesn't exist
+                billboardGui = Instance.new("BillboardGui")
+                billboardGui.Name = "TadachiisESPTags" -- Use the correct name for the BillboardGui
+                billboardGui.Adornee = player.Character.Head
+                billboardGui.Size = UDim2.new(0, 85, 0, 50) -- fixed size for the BillboardGui
+                billboardGui.StudsOffset = Vector3.new(0, 2, 0) -- adjust the vertical offset as needed
+                billboardGui.AlwaysOnTop = true
+                billboardGui.LightInfluence = 1
+                billboardGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+                billboardGui.Parent = player.Character.Head
+ 
+                local textLabel = Instance.new("TextLabel")
+                textLabel.Name = "NameLabel" -- Use the correct name for the label
+                textLabel.Text = player.Name .. "\nDistance: " .. math.floor(distance)
+                textLabel.Size = UDim2.new(1, 0, 1, 0)
+                textLabel.BackgroundTransparency = 1 -- transparent background
+                textLabel.TextColor3 = Color3.new(0, 0, 0) -- black text for the player's name
+                textLabel.TextScaled = true
+                textLabel.TextStrokeColor3 = Color3.new(0, 0, 0) -- black text stroke
+                textLabel.TextStrokeTransparency = 0 -- fully opaque text stroke (visible through walls)
+                textLabel.Visible = true -- ESP is always visible without a GUI
+                textLabel.Parent = billboardGui
+            else
+                billboardGui.NameLabel.Text = player.Name .. "\nDistance: " .. math.floor(distance) -- Update the distance text
+            end
+        end
+    end
+end
+ 
+-- Call updatePlayerESP() initially and then schedule it to be called every 0.01 seconds
+updatePlayerESP()
+game:GetService("RunService").Heartbeat:Connect(function()
+    updatePlayerESP()
+end)
+ 
+  	end    
+})
+
+--[[
+Name = <string> - The name of the button.
+Callback = <function> - The function of the button.
+]]
+
 local Section = Tab:AddSection({
 	Name = "Self Esp"
 })
@@ -852,67 +913,6 @@ end)
 Name = <string> - The name of the button.
 Callback = <function> - The function of the button.
 ]]
-
---[[
-Name = <string> - The name of the button.
-Callback = <function> - The function of the button.
-]]
-
-Tab:AddButton({
-	Name = "Name",
-	Callback = function()
-      		--This script is for those games that won't let you use a GUI
---Once executing, the ESP is instant.
- 
- 
--- Function to update player ESP distance
-local function updatePlayerESP()
-    local localCharacter = game.Players.LocalPlayer.Character
-    if not localCharacter then
-        return
-    end
- 
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        if player ~= game.Players.LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
-            local distance = (localCharacter.Head.Position - player.Character.Head.Position).Magnitude
-            local billboardGui = player.Character.Head:FindFirstChild("TadachiisESPTags") -- Check if the BillboardGui exists
-            if not billboardGui then -- Only create a new one if it doesn't exist
-                billboardGui = Instance.new("BillboardGui")
-                billboardGui.Name = "TadachiisESPTags" -- Use the correct name for the BillboardGui
-                billboardGui.Adornee = player.Character.Head
-                billboardGui.Size = UDim2.new(0, 85, 0, 50) -- fixed size for the BillboardGui
-                billboardGui.StudsOffset = Vector3.new(0, 2, 0) -- adjust the vertical offset as needed
-                billboardGui.AlwaysOnTop = true
-                billboardGui.LightInfluence = 1
-                billboardGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-                billboardGui.Parent = player.Character.Head
- 
-                local textLabel = Instance.new("TextLabel")
-                textLabel.Name = "NameLabel" -- Use the correct name for the label
-                textLabel.Text = player.Name .. "\nDistance: " .. math.floor(distance)
-                textLabel.Size = UDim2.new(1, 0, 1, 0)
-                textLabel.BackgroundTransparency = 1 -- transparent background
-                textLabel.TextColor3 = Color3.new(0, 0, 0) -- black text for the player's name
-                textLabel.TextScaled = true
-                textLabel.TextStrokeColor3 = Color3.new(0, 0, 0) -- black text stroke
-                textLabel.TextStrokeTransparency = 0 -- fully opaque text stroke (visible through walls)
-                textLabel.Visible = true -- ESP is always visible without a GUI
-                textLabel.Parent = billboardGui
-            else
-                billboardGui.NameLabel.Text = player.Name .. "\nDistance: " .. math.floor(distance) -- Update the distance text
-            end
-        end
-    end
-end
- 
--- Call updatePlayerESP() initially and then schedule it to be called every 0.01 seconds
-updatePlayerESP()
-game:GetService("RunService").Heartbeat:Connect(function()
-    updatePlayerESP()
-end)
- 
-  	end    
-})
 
 --[[
 Name = <string> - The name of the button.
@@ -2321,3 +2321,90 @@ Name = <string> - The name of the button.
 Callback = <function> - The function of the button.
 ]]
 
+Tab:AddButton({
+	Name = "CframeSpeed",
+	Callback = function()
+      		local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Speed", "DarkTheme")
+ 
+local speed = Window:NewTab("Speed")
+local rs = speed:NewSection("CFrame Speed")
+rs:NewButton("CFrame Guns FIX", "ButtonInfo", function()
+    for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+        if v:IsA("Script") and v.Name ~= "Health" and v.Name ~= "Sound" and v:FindFirstChild("LocalScript") then
+            v:Destroy()
+        end
+    end
+    game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+        repeat
+            wait()
+        until game.Players.LocalPlayer.Character
+        char.ChildAdded:Connect(function(child)
+            if child:IsA("Script") then 
+                wait(0.1)
+                if child:FindFirstChild("LocalScript") then
+                    child.LocalScript:FireServer()
+                end
+            end
+        end)
+    end)
+end)
+rs:NewButton("CFrame Speed (Z)", "ButtonInfo", function()
+        repeat
+        wait()
+    until game:IsLoaded()
+    local L_134_ = game:service('Players')
+    local L_135_ = L_134_.LocalPlayer
+    repeat
+        wait()
+    until L_135_.Character
+    local L_136_ = game:service('UserInputService')
+    local L_137_ = game:service('RunService')
+    getgenv().Multiplier = 0.5
+    local L_138_ = true
+    local L_139_
+    L_136_.InputBegan:connect(function(L_140_arg0)
+        if L_140_arg0.KeyCode == Enum.KeyCode.LeftBracket then
+            Multiplier = Multiplier + 0.01
+            print(Multiplier)
+            wait(0.2)
+            while L_136_:IsKeyDown(Enum.KeyCode.LeftBracket) do
+                wait()
+                Multiplier = Multiplier + 0.01
+                print(Multiplier)
+            end
+        end
+        if L_140_arg0.KeyCode == Enum.KeyCode.RightBracket then
+            Multiplier = Multiplier - 0.01
+            print(Multiplier)
+            wait(0.2)
+            while L_136_:IsKeyDown(Enum.KeyCode.RightBracket) do
+                wait()
+                Multiplier = Multiplier - 0.01
+                print(Multiplier)
+            end
+        end
+        if L_140_arg0.KeyCode == Enum.KeyCode.Z then
+            L_138_ = not L_138_
+            if L_138_ == true then
+                repeat
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.Humanoid.MoveDirection * Multiplier
+                    game:GetService("RunService").Stepped:wait()
+                until L_138_ == false
+            end
+        end
+    end)
+end)
+rs:NewSlider("CFrame Speed ", "SliderInfo", 5, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    getgenv().Multiplier = s
+end)
+rs:NewKeybind("Toggle UI", "KeybindInfo", Enum.KeyCode.V, function()
+    Library.ToggleUI()
+end)
+  	end    
+})
+
+--[[
+Name = <string> - The name of the button.
+Callback = <function> - The function of the button.
+]]
