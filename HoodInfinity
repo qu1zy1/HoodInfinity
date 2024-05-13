@@ -721,7 +721,7 @@ Tab:AddButton({
       		local FillColor = Color3.fromRGB(255, 0, 0) -- Red color
 local DepthMode = "AlwaysOnTop"
 local FillTransparency = 0.5
-local OutlineColor = Color3.fromRGB(255, 255, 255) -- Red color
+local OutlineColor = Color3.fromRGB(255, 255, 255) -- White color
 local OutlineTransparency = 0
 
 local CoreGui = game:GetService("CoreGui")
@@ -745,7 +745,7 @@ local function Highlight(plr)
     Highlight.DepthMode = DepthMode
     Highlight.FillTransparency = FillTransparency
     Highlight.OutlineColor = OutlineColor
-    Highlight.OutlineTransparency = 0
+    Highlight.OutlineTransparency = OutlineTransparency
     Highlight.Parent = Storage
 
     local plrchar = plr.Character
@@ -758,15 +758,20 @@ local function Highlight(plr)
     end)
 end
 
+-- Function to highlight all players
+local function HighlightAllPlayers()
+    for _, player in ipairs(Players:GetPlayers()) do
+        Highlight(player)
+    end
+end
+
 -- Connect to PlayerAdded event to highlight new players
 Players.PlayerAdded:Connect(Highlight)
 
--- Highlight existing players
-for i, v in pairs(Players:GetPlayers()) do
-    Highlight(v)
-end
+-- Highlight existing players when the script runs
+HighlightAllPlayers()
 
--- Disconnect events and destroy highlights when players leave
+-- Connect to PlayerRemoving event to clean up when players leave
 Players.PlayerRemoving:Connect(function(plr)
     local plrname = plr.Name
     if Storage[plrname] then
@@ -776,6 +781,7 @@ Players.PlayerRemoving:Connect(function(plr)
         connections[plr]:Disconnect()
     end
 end)
+
   	end    
 })
 
@@ -862,10 +868,6 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local connections = {}
 
-local Storage = Instance.new("Folder")
-Storage.Parent = CoreGui
-Storage.Name = "Highlight_Storage"
-
 local function Highlight(plr)
     if plr ~= LocalPlayer then -- Skip highlighting other players
         return
@@ -878,7 +880,7 @@ local function Highlight(plr)
     Highlight.FillTransparency = FillTransparency
     Highlight.OutlineColor = OutlineColor
     Highlight.OutlineTransparency = 0
-    Highlight.Parent = Storage
+    Highlight.Parent = CoreGui
 
     local plrchar = plr.Character
     if plrchar then
@@ -890,16 +892,24 @@ local function Highlight(plr)
     end)
 end
 
--- Connect to PlayerAdded event to highlight the local player
-Players.PlayerAdded:Connect(Highlight)
+-- Function to highlight all players
+local function HighlightPlayers()
+    for _, player in ipairs(Players:GetPlayers()) do
+        Highlight(player)
+    end
+end
 
--- Highlight the local player
-Highlight(LocalPlayer)
+-- Highlight players when the script runs
+HighlightPlayers()
+
+-- Connect to PlayerAdded event to highlight new players
+Players.PlayerAdded:Connect(function(player)
+    Highlight(player)
+end)
 
 -- Disconnect events and destroy highlights when the local player leaves
 Players.PlayerRemoving:Connect(function(plr)
     if plr == LocalPlayer then
-        Storage:Destroy()
         for _, connection in pairs(connections) do
             connection:Disconnect()
         end
